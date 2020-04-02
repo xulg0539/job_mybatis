@@ -32,5 +32,20 @@
         select * from user
     </select>
 
+    <!--增加-->
+    <insert id="add" paramterType="com.lagou.pojo.User" >
+        insert into user values (#{id},#{username},#{password},#{birthday})
+    </insert>
+
+    <!--增加-->
+    <update id="update" paramterType="com.lagou.pojo.User" >
+        update user set username=#{username},password=#{password} where id=#{id}
+    </update>
+
+    <!--删除-->
+    <delete id="del" paramterType="com.lagou.pojo.User" >
+        delete from user where id=#{id}
+    </delete>
+
 
 </mapper>

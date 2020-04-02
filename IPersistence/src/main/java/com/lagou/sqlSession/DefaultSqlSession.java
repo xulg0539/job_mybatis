@@ -23,6 +23,7 @@ public class DefaultSqlSession implements SqlSession {
         List<Object> list = simpleExecutor.query(configuration, mappedStatement, params);
 
         return (List<E>) list;
+
     }
 
     @Override
@@ -36,6 +37,17 @@ public class DefaultSqlSession implements SqlSession {
 
 
     }
+
+    @Override
+    public int update(String statementid, Object... params) throws Exception {
+        //将要去完成对simpleExecutor里的update方法的调用
+        simpleExecutor simpleExecutor = new simpleExecutor();
+        MappedStatement mappedStatement = configuration.getMappedStatementMap().get(statementid);
+        int rows_updated = simpleExecutor.update(configuration, mappedStatement, params);
+
+        return rows_updated;
+    }
+
 
     @Override
     public <T> T getMapper(Class<?> mapperClass) {
@@ -60,8 +72,17 @@ public class DefaultSqlSession implements SqlSession {
                     List<Object> objects = selectList(statementId, args);
                     return objects;
                 }
+                //查询单个
+                else if(methodName.startsWith("select"))
+                {
+                    return selectOne(statementId,args);
+                }
+                //更新操作
+                else
+                {
+                   return  update(statementId,args);
+                }
 
-                return selectOne(statementId,args);
 
             }
         });

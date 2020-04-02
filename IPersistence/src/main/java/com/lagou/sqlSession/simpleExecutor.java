@@ -84,8 +84,56 @@ public class simpleExecutor implements  Executor {
             objects.add(o);
 
         }
+        //之前的有bug,没有关闭资源
+        resultSet.close();
+        preparedStatement.close();
+        connection.close();
             return (List<E>) objects;
 
+    }
+
+    @Override
+    public int update(Configuration configuration, MappedStatement mappedStatement, Object... params) throws Exception {
+        //默认更新操作数据行数
+        int rows_updated=0;
+        // 1. 注册驱动，获取连接
+        Connection connection = configuration.getDataSource().getConnection();
+        //默认事务自动提交-不加开关
+        // 2. 获取sql语句 :增删改操作语句
+        //转换sql语句：转换的过程中，还需要对#{}里面的值进行解析存储
+        String sql = mappedStatement.getSql();
+        BoundSql boundSql = getBoundSql(sql);
+
+        // 3.获取预处理对象：preparedStatement
+        PreparedStatement preparedStatement = connection.prepareStatement(boundSql.getSqlText());
+
+        // 4. 设置参数
+        //获取到了参数的全路径
+        String paramterType = mappedStatement.getParamterType();
+        Class<?> paramtertypeClass = getClassType(paramterType);
+
+        List<ParameterMapping> parameterMappingList = boundSql.getParameterMappingList();
+        for (int i = 0; i < parameterMappingList.size(); i++) {
+            ParameterMapping parameterMapping = parameterMappingList.get(i);
+            String content = parameterMapping.getContent();
+
+            //反射
+            Field declaredField = paramtertypeClass.getDeclaredField(content);
+            //暴力访问
+            declaredField.setAccessible(true);
+            Object o = declaredField.get(params[0]);
+
+            preparedStatement.setObject(i+1,o);
+
+        }
+
+
+        // 5. 执行sql
+        rows_updated = preparedStatement.executeUpdate();
+        //之前的有bug,没有关闭资源
+        preparedStatement.close();
+        connection.close();
+        return rows_updated;
     }
 
     private Class<?> getClassType(String paramterType) throws ClassNotFoundException {

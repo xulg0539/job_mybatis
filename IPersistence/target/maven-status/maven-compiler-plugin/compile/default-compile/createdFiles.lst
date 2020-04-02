@@ -1,1 +1,3 @@
 com\lagou\io\Resources.class
+com\lagou\sqlSession\DefaultSqlSession$1.class
+com\lagou\sqlSession\DefaultSqlSession.class

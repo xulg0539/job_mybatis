@@ -41,6 +41,58 @@ public class XMLMapperBuilder {
 
         }
 
+        //扫描注册insert语句
+        List<Element> list2 = rootElement.selectNodes("//insert");
+        for (Element element : list2) {
+            String id = element.attributeValue("id");
+            String resultType = element.attributeValue("resultType");
+            String paramterType = element.attributeValue("paramterType");
+            String sqlText = element.getTextTrim();
+            MappedStatement mappedStatement = new MappedStatement();
+            mappedStatement.setId(id);
+            mappedStatement.setResultType(resultType);
+            mappedStatement.setParamterType(paramterType);
+            mappedStatement.setSql(sqlText);
+            String key = namespace+"."+id;
+            configuration.getMappedStatementMap().put(key,mappedStatement);
+
+        }
+
+        //扫描注册delete语句
+        List<Element> list3 = rootElement.selectNodes("//delete");
+        for (Element element : list3) {
+            String id = element.attributeValue("id");
+            String resultType = element.attributeValue("resultType");
+            String paramterType = element.attributeValue("paramterType");
+            String sqlText = element.getTextTrim();
+            MappedStatement mappedStatement = new MappedStatement();
+            mappedStatement.setId(id);
+            mappedStatement.setResultType(resultType);
+            mappedStatement.setParamterType(paramterType);
+            mappedStatement.setSql(sqlText);
+            String key = namespace+"."+id;
+            configuration.getMappedStatementMap().put(key,mappedStatement);
+
+        }
+
+
+        //扫描注册update语句
+        List<Element> list4 = rootElement.selectNodes("//update");
+        for (Element element : list4) {
+            String id = element.attributeValue("id");
+            String resultType = element.attributeValue("resultType");
+            String paramterType = element.attributeValue("paramterType");
+            String sqlText = element.getTextTrim();
+            MappedStatement mappedStatement = new MappedStatement();
+            mappedStatement.setId(id);
+            mappedStatement.setResultType(resultType);
+            mappedStatement.setParamterType(paramterType);
+            mappedStatement.setSql(sqlText);
+            String key = namespace+"."+id;
+            configuration.getMappedStatementMap().put(key,mappedStatement);
+
+        }
+
     }
 
 
